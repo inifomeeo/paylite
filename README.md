@@ -1,6 +1,6 @@
 # Paylite
 
-ASP.NET Core payment processing API with payment lifecycle management, idempotency, webhook verification, API key security, and Docker Compose support.
+ASP.NET Core payment processing API with payment lifecycle management, idempotency, webhook verification, and API key security.
 
 Data is backed by Microsoft SQL Server via Entity Framework Core.
 
@@ -21,8 +21,16 @@ Data is backed by Microsoft SQL Server via Entity Framework Core.
 
 ## Run
 
+Create a SQL Server database locally with name set to paylitedb, then run
+
 ```bash
-docker compose up --build
+dotnet ef database update
+```
+
+and
+
+```bash
+dotnet run --project api.csproj
 ```
 
 Swagger UI is available at `http://localhost:8080/swagger-ui/index.html`.
