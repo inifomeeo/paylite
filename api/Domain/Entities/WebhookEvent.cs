@@ -12,7 +12,7 @@ public class WebhookEvent
     public string Payload { get; set; } = string.Empty;
     public bool Verified { get; set; }
     public PaymentStatus? Status { get; set; }
-    public DateTime ReceivedAtUtc { get; set; } = DateTime.UtcNow;
+    public DateTime ReceivedAtUtc { get; set; }
     public DateTime ProcessedAtUtc { get; set; }
 
     public Payment? Payment { get; set; }

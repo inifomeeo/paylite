@@ -12,7 +12,7 @@ public class Payment
     public string Reference { get; set; } = string.Empty;
     public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
     public string? FailureReason { get; set; }
-    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; }
     public DateTime UpdatedAtUtc { get; set; }
 
     public ICollection<IdempotencyKey> IdempotencyKeys { get; set; } = [];
