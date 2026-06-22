@@ -1,10 +1,13 @@
 using api.Dtos.Payment;
 using api.Interfaces;
+using api.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;
 
 [ApiController]
+[Authorize(AuthenticationSchemes = ApiKeyAuthenticationDefaults.SchemeName)]
 [Route("api/v1/payments")]
 public class PaymentsController(IPaymentService paymentService) : ControllerBase
 {

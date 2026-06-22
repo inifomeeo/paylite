@@ -5,6 +5,8 @@ using api.Options;
 using api.Interfaces;
 using api.Services;
 using System.Text.Json.Serialization;
+using api.Security;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,13 @@ builder.Services.Configure<PaymentOptions>(
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services
+    .AddAuthentication(ApiKeyAuthenticationDefaults.SchemeName)
+    .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(
+        ApiKeyAuthenticationDefaults.SchemeName, _ => { });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IIdempotencyService, IdempotencyService>();
@@ -64,6 +73,7 @@ app.MapGet("/swaggr-ui/{**path}", context =>
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
