@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using api.Data;
 using api.Domain.Entities;
 using api.Dtos.Payment;
 using api.Interfaces;
 using api.Options;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using api.Exceptions;
 
 namespace api.Services;
 
@@ -71,7 +72,7 @@ public class PaymentService(
 
         if (payment is null)
         {
-            throw new KeyNotFoundException($"Payment {id} was not found.");
+            throw new NotFoundException($"Payment {id} was not found.");
         }
         
         return MapToPaymentDto(payment);

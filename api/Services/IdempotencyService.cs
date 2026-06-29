@@ -2,11 +2,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using api.Data;
 using api.Domain.Entities;
 using api.Dtos.Payment;
 using api.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using api.Exceptions;
 
 namespace api.Services;
 
@@ -37,6 +38,11 @@ public class IdempotencyService(ApplicationDBContext dbContext) : IIdempotencySe
             return null;
         }
 
+        if (!string.Equals(record.RequestHash, requestHash, StringComparison.Ordinal))
+        {
+            throw new ConflictException("The provided idempotency key was already used for a different request.");
+        }
+
         return record.Payment;
     }
 
@@ -56,6 +62,13 @@ public class IdempotencyService(ApplicationDBContext dbContext) : IIdempotencySe
             CreatedAtUtc = DateTime.UtcNow
         });
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException)
+        {
+            throw new ConflictException("The provided idempotency key is already in use.");
+        }
     }
 }
