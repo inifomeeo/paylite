@@ -76,14 +76,6 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/v3/api-docs/v1.json", "Paylite API v1");
 });
 
-app.MapGet("/swaggr-ui/{**path}", context =>
-{
-    var path = context.Request.RouteValues["path"]?.ToString();
-    context.Response.Redirect(string.IsNullOrWhiteSpace(path) ? "/swagger-ui" : $"/swagger-ui/{path}");
-    return Task.CompletedTask;
-}).AllowAnonymous();
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
