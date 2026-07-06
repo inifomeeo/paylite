@@ -1,12 +1,13 @@
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using api.Data;
+using api.Middleware;
 using api.Options;
 using api.Interfaces;
 using api.Services;
-using System.Text.Json.Serialization;
 using api.Security;
-using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IIdempotencyService, IdempotencyService>();
+builder.Services.AddScoped<IWebhookService, WebhookService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -43,9 +45,19 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Description = "Payment processing API with idempotency, webhook verification, and audit logging."
     });
+
+    options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = ApiKeyAuthenticationDefaults.HeaderName,
+        Type = SecuritySchemeType.ApiKey,
+        Description = "API key required for payment endpoints."
+    });
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {

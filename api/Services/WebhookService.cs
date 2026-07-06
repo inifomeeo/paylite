@@ -82,7 +82,7 @@ public class WebhookService(
         }
 
         payment.Status = request.Status;
-        payment .FailureReason = request.FailureReason;
+        payment.FailureReason = request.FailureReason;
         payment.UpdatedAtUtc = DateTime.UtcNow;
         webhookEvent.ProcessedAtUtc = DateTime.UtcNow;
 
